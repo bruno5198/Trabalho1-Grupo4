@@ -17,7 +17,9 @@ tempojogo = 0
 numerocaract = 0
 stop_key = ' '
 pressed_keys = []  # empty list to start with
-
+dicResult = {}
+Input = namedtuple('Input', ['requested', 'received', 'duration'])
+registo = []
 
 def tic():
     return time.time()
@@ -36,8 +38,12 @@ def readAllUpToTime(inicio, tempojogo, stop):
     while ( (toc(inicio) ) < tempojogo):
 
         valueChar = randint(asciicharmin, asciicharmax)
+        inicioInput = tic()
         print('Type -> '+ chr(valueChar)+'('+stop+' to stop)')
         pressed_key = readchar.readkey()
+        fimInput = toc(inicioInput)
+
+        registo.append(Input(chr(valueChar), pressed_key, fimInput - inicioInput))
 
         if pressed_key == stop:
             print('You typed ' + Fore.RED + Style.BRIGHT + pressed_key + Style.RESET_ALL
@@ -51,7 +57,16 @@ def readAllUpToTime(inicio, tempojogo, stop):
                 # print('Thank you for typing ' + Fore.RED + Style.BRIGHT + pressed_key + Style.RESET_ALL)
             pressed_keys.append(pressed_key)
 
-    print('Acertou : ' +str(charcertos))
+    #print('Acertou : ' +str(charcertos))
+
+
+    dicResult = {'accuracy': (charcertos / contatentativas), 'inputs': registo,
+                 'number_of_hits': charcertos, 'number_of_types': contatentativas,
+                 'test_duration': (tic() - inicio),
+                 'test_end': time.ctime(tic()),
+                 'test_start': time.ctime(inicio)}
+
+    print(dicResult)
 
 def readAllUpToCaract(inicio, numerocarac, stop):
 
@@ -132,7 +147,11 @@ def main():
     fim = toc(inicio);
     print('Ellapsed time: ', fim)
 
+    # TODO : Check this
+    print(" ++++++++++++ FIM ++++++++++++++ ")
+    print(registo)
 
+    print(dicResult)
 
 
 if __name__ == '__main__':
