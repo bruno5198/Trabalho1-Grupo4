@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 
-from random_word import RandomWords
+#from random_word import RandomWords
 from colorama import Fore, Back, Style
 from datetime import datetime
 import readchar
@@ -16,8 +16,8 @@ wrong_Answers = 0                                   # Variable to save the numbe
 number_of_types = 0                                 # Variable to save the total number of answers.
 startTime = 0                                       # Variable to sae the time at the start of the test.
 answersTimeList = []                                # List to save each answer time.
-imputRequested = []                                 # List to save each answer time.
-imputReceived = []                                  # List to save each answer time.
+inputRequested = []                                 # List to save each answer time.
+inputReceived = []                                  # List to save each answer time.
 test_start = 0                                      # Variable to save test start date and time.
 
 
@@ -89,6 +89,8 @@ def typingKey(stop_key):
 
                 print('Type character ' + Fore.BLUE + Style.BRIGHT + str(random_Character) + Style.RESET_ALL)   # Prints the character/word that user must type.
 
+                inputRequested.append(random_Character)                     # Add the requested character to the list inputRequested.
+
                 answersStartTime = time.time()                              # Check the time at the start of answer.
 
                 if enter_Needed:                                            # Check whats the value of enter_Needed variable, True or False.
@@ -100,6 +102,7 @@ def typingKey(stop_key):
                 answersStopTime = time.time()                               # Check the time at the end of answer.
                 answersTime = answersStopTime - answersStartTime            # Calculate the answers duration time.
                 answersTimeList.append(answersTime)                         # Add answers duration time to list answersTimeList.
+                inputReceived.append(pressed_key)                           # Add the input character to the list inputReceived.
 
                 if pressed_key == stop_key:
                     timeOut(0, 0)                                           # Call timeOut function.
@@ -138,6 +141,8 @@ def timeOut(signum, stack):
     else:
         accuracy = number_of_hits / number_of_types                                                             # Calculate the accuracy.
     print('\r=> Accuracy:   ' + str(accuracy))                                                                  # Prints the user accuracy.
+    print('\r=> Requested characters:' + str(inputRequested))                                                                           # Prints the list of requested characters.
+    print('\r=> Typed characters:    ' + str(inputReceived))                                                                            # Prints the list of typed characters.
     print('\r=> Total nº of answers:   ' + str(number_of_types))                                                # Prints the total number of answers.
     print('\r=> Nº of correct answers: ' + Fore.GREEN + Style.BRIGHT + str(number_of_hits) + Style.RESET_ALL)   # Prints the number of correct answers.
     print('\r=> Nº of wrong answers:   ' + Fore.RED + Style.BRIGHT + str(wrong_Answers) + Style.RESET_ALL)      # Prints the number of wrong answers.
@@ -153,10 +158,8 @@ def timeOut(signum, stack):
     signal.alarm(0)                                                                                             # Stops counting test duration.
     exit()                                                                                                      # Stops program.
 
-
 def main():
     typingKey(' ')                              # Start typingKey function.
-
 
 if __name__ == "__main__":
     main()
