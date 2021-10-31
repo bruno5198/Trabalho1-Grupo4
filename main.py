@@ -4,6 +4,7 @@
 # BP
 # Part 03 - # 2021/10/21 PSR
 # Exercício 1 - Tempo e Temporizadores
+from collections import namedtuple
 
 from colorama import Fore, Back, Style
 import time

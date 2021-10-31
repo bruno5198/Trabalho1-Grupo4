@@ -9,6 +9,9 @@ import random
 import time
 import signal
 import argparse
+import json
+import pprint
+from collections import namedtuple
 
 # Global variables initialization.
 number_of_hits = 0                                  # Variable to save the number of correct answers.
@@ -19,6 +22,11 @@ answersTimeList = []                                # List to save each answer t
 imputRequested = []                                 # List to save each answer time.
 imputReceived = []                                  # List to save each answer time.
 test_start = 0                                      # Variable to save test start date and time.
+dicResult = {}
+Input = namedtuple('Input', ['requested', 'received', 'duration'])
+registo = []
+answersTimeOK = 0
+answersTimeNOK = 0
 
 
 def typingKey(stop_key):
@@ -39,6 +47,8 @@ def typingKey(stop_key):
         global startTime                                    # Make variable to save the total number of answers global.
         global answersTimeList                              # Make list to save each answer time global.
         global test_start                                   # Make variable to save test start date and time global.
+        global answersTimeOK
+        global answersTimeNOK
 
         print('\n==================== PSR typing test (Grupo 4) ====================')  # Initial message.
 
@@ -107,12 +117,16 @@ def typingKey(stop_key):
                     color = Fore.GREEN                                      # Green color, it means correct answer.
                     number_of_hits += 1                                     # Add 1 to the number of correct answers.
                     number_of_types += 1                                    # Add 1 to the total number of answers.
+                    answersTimeOK = answersTimeOK + answersTime             # Total times of ok answers
                 else:
                     color = Fore.RED                                        # Red color, it means incorrect answer.
                     wrong_Answers += 1                                      # Add 1 to the number of wrong answers.
                     number_of_types += 1                                    # Add 1 to the total number of answers.
+                    answersTimeNOK = answersTimeNOK + answersTime           # Total times of not ok answers
 
                 print('You typed ' + color + Style.BRIGHT + str(pressed_key) + Style.RESET_ALL)    # Print user typed key.
+
+                registo.append(Input(str(random_Character) , pressed_key, answersTime))
 
                 if (args.get('use_time_mode') == False) and (number_of_types == args.get('max_value')):    # Check if user choose a test with maximum inputs number duration and if those number it was already hit.
                     timeOut(0, 0)  # Call timeOut function.
@@ -133,29 +147,67 @@ def timeOut(signum, stack):
     endTime = time.time()                                                                                       # Check the time at the end of the test.
     print(Fore.YELLOW + Style.BRIGHT + '\nTest finished!' + Style.RESET_ALL)                                    # Test finished message.
     print('\r\n\n================================= Results =================================')                  # Initial message.
-    if number_of_types == 0:                                                                                    # Check if number of types it's equal to 0.
-        accuracy = 0                                                                                            # Set's the accuracy equals to 0.
-    else:
-        accuracy = number_of_hits / number_of_types                                                             # Calculate the accuracy.
-    print('\r=> Accuracy:   ' + str(accuracy))                                                                  # Prints the user accuracy.
-    print('\r=> Total nº of answers:   ' + str(number_of_types))                                                # Prints the total number of answers.
-    print('\r=> Nº of correct answers: ' + Fore.GREEN + Style.BRIGHT + str(number_of_hits) + Style.RESET_ALL)   # Prints the number of correct answers.
-    print('\r=> Nº of wrong answers:   ' + Fore.RED + Style.BRIGHT + str(wrong_Answers) + Style.RESET_ALL)      # Prints the number of wrong answers.
-    print('\r=> Test start: ' + str(test_start))
-    print('\r=> Test end: ' + str(test_end))
+ #   if number_of_types == 0:                                                                                    # Check if number of types it's equal to 0.
+ #       accuracy = 0                                                                                            # Set's the accuracy equals to 0.
+ #   else:
+ #       accuracy = number_of_hits / number_of_types                                                             # Calculate the accuracy.
+
+ #   print('\r=> Accuracy:   ' + str(accuracy))                                                                  # Prints the user accuracy.
+ #   print('\r=> Total nº of answers:   ' + str(number_of_types))                                                # Prints the total number of answers.
+ #   print('\r=> Nº of correct answers: ' + Fore.GREEN + Style.BRIGHT + str(number_of_hits) + Style.RESET_ALL)   # Prints the number of correct answers.
+ #   print('\r=> Nº of wrong answers:   ' + Fore.RED + Style.BRIGHT + str(wrong_Answers) + Style.RESET_ALL)      # Prints the number of wrong answers.
+ #   print('\r=> Test start: ' + str(test_start))
+ #   print('\r=> Test end: ' + str(test_end))
     testDuration = str(endTime - startTime)                                                                     # Calculate the test duration time.
     test_duration = testDuration.split('.')                                                                     # Split answers time by minutes and seconds.
-    print('\r=> Duration time of test: ' + str(test_duration[0]) + Style.DIM + 'sec ' + Style.RESET_ALL + str(test_duration[1])[:2] + Style.DIM + 'ms ' + Style.RESET_ALL)  # Prints the test duration time.
-    for i in range(1, len(answersTimeList)):                                                                    # For loop to go through all answersTimeList list elemets.
-        answersTimeListDivided = str(answersTimeList[i]).split('.')                                             # Split answers time by minutes and seconds.
-        print('\r=> Time to ' + str(i) + 'ª answers:    ' + str(answersTimeListDivided[0]) + Style.DIM + 'sec ' + Style.RESET_ALL + str(answersTimeListDivided[1])[:2] + Style.DIM + 'ms\r' + Style.RESET_ALL)  # Prints each answer time.
+ #   print('\r=> Duration time of test: ' + str(test_duration[0]) + Style.DIM + 'sec ' + Style.RESET_ALL + str(test_duration[1])[:2] + Style.DIM + 'ms ' + Style.RESET_ALL)  # Prints the test duration time.
+ #   for i in range(1, len(answersTimeList)):                                                                    # For loop to go through all answersTimeList list elemets.
+ #       answersTimeListDivided = str(answersTimeList[i]).split('.')                                             # Split answers time by minutes and seconds.
+ #       print('\r=> Time to ' + str(i) + 'ª answers:    ' + str(answersTimeListDivided[0]) + Style.DIM + 'sec ' + Style.RESET_ALL + str(answersTimeListDivided[1])[:2] + Style.DIM + 'ms\r' + Style.RESET_ALL)  # Prints each answer time.
+
+    startTimePrint = time.ctime(startTime)
+    endTimePrint = time.ctime(endTime)
+
+    if number_of_types == 0:                                                                                    # Check zero divison
+        type_average_duration = 0
+        accuracy = 0
+    else:
+        type_average_duration = (float(testDuration)/float(number_of_types))                                    # Calculate average times and accuracy
+        accuracy = number_of_hits / number_of_types
+
+    if number_of_hits == 0:                                                                                     # Check zero divison
+        type_hit_average_duration = 0
+    else:
+        type_hit_average_duration = (answersTimeOK / number_of_hits)                                            # Calculate average hit times
+
+    if wrong_Answers == 0:                                                                                      # Check zero divison
+        type_miss_average_duration = 0
+    else:
+        type_miss_average_duration = answersTimeNOK/wrong_Answers                                               # Calculate average miss times
+
+    dicResult = {'accuracy': accuracy, 'inputs': registo,
+             'number_of_hits': number_of_hits, 'number_of_types': number_of_types,
+             'test_duration': testDuration, 'test_end': endTimePrint, 'test_start': startTimePrint,
+             'type_average_duration': type_average_duration,'type_hit_average_duration': type_hit_average_duration,
+             'type_miss_average_duration': type_miss_average_duration  }                                        # Print Results
 
     signal.alarm(0)                                                                                             # Stops counting test duration.
+
+    #print('*************CHECK CHECK ******************')
+    #print('type_miss_average_duration::'+ str(type_miss_average_duration)+'   answersTimeNOK::'+ str(answersTimeNOK)+'   wrong_Answers::'+ str(wrong_Answers))
+    #print('*************FIM FIM ******************')
+
+    pp = pprint.PrettyPrinter(indent=1)
+    pp.pprint(dicResult)
+
+    #print(json.dumps(dicResult, sort_keys=False, indent=2))
+
     exit()                                                                                                      # Stops program.
 
 
 def main():
     typingKey(' ')                              # Start typingKey function.
+
 
 
 if __name__ == "__main__":
