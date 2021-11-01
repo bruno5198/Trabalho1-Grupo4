@@ -35,6 +35,14 @@ def typingKey(stop_key):
     global args
     args = vars(parser.parse_args())
 
+    if args.get('max_value') is None:                       # Verifica se o argumento max_value está preenchido.
+        print('\n Falta argumento, max_value, -mv')
+        exit()
+
+    if args.get('test_difficulty_value') is None:           # Verifica se o argumento test difficulty value está preenchido.
+        print('\n Falta argumento, test_difficulty_value, -tdv')
+        exit()
+
     if (args.get('test_difficulty_value') > 0) and (args.get('test_difficulty_value') < 5):     # Check if users test difficulty value input it's valid.
 
         # Variables initialization.
