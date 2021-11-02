@@ -196,10 +196,13 @@ def timeOut(signum, stack):
             elif key == 'inputs':                                                                               # Check if the key in analysis it's 'inputs' key.
                 print('\r')                                                                                     # Prints a carriage return.
                 print("\x1B[F\x1B[2K", end="")                                                                  # To hide the input text.
-                print(" '" + key + "'" + ': [' + str(value[0]) + ',')                                           # Prints the desired text.
-                for i in range(1, len(value) - 1):                                                              # Cycle that runs through the contents of the previously created list.
-                    print("\r            " + str(value[i]) + ',')                                               # Prints the desired text.
-                print("\r            " + str(value[len(value)-1]) + '],')                                       # Prints the desired text.
+                if len(value) > 1:
+                    print(" '" + key + "'" + ': [' + str(value[0]) + ',')                                       # Prints the desired text.
+                    for i in range(1, len(value)-1):                                                            # Cycle that runs through the contents of the previously created list.
+                        print("\r            " + str(value[i]) + ',')                                           # Prints the desired text.
+                    print("\r            " + str(value[len(value)-1]) + '],')                                   # Prints the desired text.
+                else:
+                    print(" '" + key + "'" + ': [' + str(value[0]) + '],')                                      # Prints the desired text.
             elif key == 'type_miss_average_duration':                                                           # Check if the key in analysis it's 'type_miss_average_duration' key.
                 print('\r', "'" + key + "'" + ': ' + str(value) + "}\r")                                        # Prints the desired text.
             else:
