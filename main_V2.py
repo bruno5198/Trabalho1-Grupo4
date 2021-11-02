@@ -118,7 +118,7 @@ def typingKey(stop_key):
                 answers_time_list.append(answers_time)                      # Add answers duration time to list answersTimeList.
                 input_received.append(pressed_key)                          # Add the input character to the list inputReceived.
 
-                if pressed_key == stop_key:
+                if pressed_key == stop_key or pressed_key == '\x03':
                     timeOut(0, 0)                                           # Call timeOut function.
                 elif pressed_key == random_character:                       # Checks if user typed key it's equal to random key generated.
                     color = Fore.GREEN                                      # Green color, it means correct answer.
