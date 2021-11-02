@@ -185,6 +185,10 @@ def timeOut(signum, stack):
     signal.alarm(0)                                                                                             # Stops counting test duration.
 
     if args.get('use_time_mode'):
+        if not dic_result['inputs']:
+            print('\r' + Fore.YELLOW + Style.BRIGHT + 'No characters entered!' + Style.RESET_ALL + '\n\r')      # Test finished message.
+            exit()
+
         # This part of code is necessary because of the formatting error when we combine signals (to end text after a user defined amount of time) and Readchar function.
         for key, value in dic_result.items():                                                                   # Cycle that runs through the contents of the previously created dictionary.
             if key == 'accuracy':                                                                               # Check if the key in analysis it's 'accuracy' key.
