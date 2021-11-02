@@ -12,18 +12,18 @@ import pprint
 from collections import namedtuple
 
 # Global variables initialization.
-number_of_hits = 0                                  # Variable to save the number of correct answers.
-wrong_answers = 0                                   # Variable to save the number of wrong answers.
-number_of_types = 0                                 # Variable to save the total number of answers.
-start_time = 0                                      # Variable to sae the time at the start of the test.
-answers_time_list = []                              # List to save each answer time.
-input_requested = []                                # List to save each answer time.
-input_received = []                                 # List to save each answer time.
-test_start = 0                                      # Variable to save test start date and time.
-entry = []
-Input = namedtuple('Input', ['requested', 'received', 'duration'])
-answers_time_OK = 0
-answers_time_NOK = 0
+number_of_hits = 0                                                      # Variable to save the number of correct answers.
+wrong_answers = 0                                                       # Variable to save the number of wrong answers.
+number_of_types = 0                                                     # Variable to save the total number of answers.
+start_time = 0                                                          # Variable to sae the time at the start of the test.
+answers_time_list = []                                                  # List to save each answer time.
+input_requested = []                                                    # List to save each answer time.
+input_received = []                                                     # List to save each answer time.
+test_start = 0                                                          # Variable to save test start date and time.
+entry = []                                                              # Create an empty list to save all the inputs.
+Input = namedtuple('Input', ['requested', 'received', 'duration'])      # Creation of a namedtuple.
+answers_time_OK = 0                                                     # Variable to save the total time of ok answer.
+answers_time_NOK = 0                                                    # Variable to save the total time of not ok answer.
 
 def typingKey(stop_key):
 
@@ -35,15 +35,15 @@ def typingKey(stop_key):
     global args
     args = vars(parser.parse_args())
 
-    if args.get('max_value') is None:                       # Verifica se o argumento max_value está preenchido.
-        print('\n Falta argumento, max_value, -mv')
-        exit()
+    if args.get('max_value') is None:                                                               # Check if users maximum value value input it isn't empty.
+        print(Fore.RED + Style.BRIGHT + '\n Missing argument: max_value, -mv' + Style.RESET_ALL)    # Error message.
+        exit()                                                                                      # Stops program.
 
-    if args.get('test_difficulty_value') is None:           # Verifica se o argumento test difficulty value está preenchido.
-        print('\n Falta argumento, test_difficulty_value, -tdv')
-        exit()
+    if args.get('test_difficulty_value') is None:                                                   # Check if users test difficulty value input it isn't empty.
+        print(Fore.RED + Style.BRIGHT + '\n Missing argument: test_difficulty_value, -tdv' + Style.RESET_ALL)   # Error message.
+        exit()                                                                                      # Stops program.
 
-    if (args.get('test_difficulty_value') > 0) and (args.get('test_difficulty_value') < 5):     # Check if users test difficulty value input it's valid.
+    if (args.get('test_difficulty_value') > 0) and (args.get('test_difficulty_value') < 5):         # Check if users test difficulty value input it's valid.
 
         # Variables initialization.
         global number_of_hits                               # Make variable to save the number of correct answers global.
@@ -52,8 +52,8 @@ def typingKey(stop_key):
         global start_time                                   # Make variable to save the total number of answers global.
         global answers_time_list                            # Make list to save each answer time global.
         global test_start                                   # Make variable to save test start date and time global.
-        global answers_time_OK
-        global answers_time_NOK
+        global answers_time_OK                              # Make variable to save the total time of ok answer global.
+        global answers_time_NOK                             # Make variable to save the total time of not ok answer global.
 
         print('\n==================== PSR typing test (Grupo 4) ====================')  # Initial message.
 
@@ -65,7 +65,6 @@ def typingKey(stop_key):
             Text = ' Must'                                  # Set text to type at the preliminary informations.
         elif args.get('test_difficulty_value') == 4:        # Check what's the test difficulty chosen.
             Text = ' Must'                                  # Set text to type at the preliminary informations.
-
 
         print('\n=> You must type the character/word corresponding to the one indicated.\n=>' + Fore.YELLOW + Style.BRIGHT +
             Text + ' press enter' + Style.RESET_ALL + ' to validate your answer.\n=> Must press CTRL + C or SPACE (+ '
@@ -89,16 +88,16 @@ def typingKey(stop_key):
                     random_character = random.choice(string.ascii_letters + string.digits)  # Generate a random character (letters or numbers).
                     enter_needed = False
                 elif args.get('test_difficulty_value') == 3:                                # Check what's the test difficulty chosen.
-                    file = open("words.txt")
-                    random_character = str(file.readlines()[random.randint(0, 1050)])
+                    file = open("words.txt")                                                # Open the .txt file that contain the random words.
+                    random_character = str(file.readlines()[random.randint(0, 1050)])       # Choose a random word.
                     random_character = random_character.rstrip('\n')                        # Remove the new line character ("\n") from string.
-                    file.close()
+                    file.close()                                                            # Close the file that contain the random words.
                     enter_needed = True
                 elif args.get('test_difficulty_value') == 4:                                # Check what's the test difficulty chosen.
-                    file = open("Sentences.txt")
-                    random_character = str(file.readlines()[random.randint(0, 155)])
+                    file = open("Sentences.txt")                                            # Open the .txt file that contain the random sentences.
+                    random_character = str(file.readlines()[random.randint(0, 155)])        # Choose a random sentence.
                     random_character = random_character.rstrip('\n')                        # Remove the new line character ("\n") from string.
-                    file.close()
+                    file.close()                                                            # Close the file that contain the random sentences.
                     enter_needed = True
 
                 print('Type character ' + Fore.BLUE + Style.BRIGHT + str(random_character) + Style.RESET_ALL)   # Prints the character/word that user must type.
@@ -118,25 +117,25 @@ def typingKey(stop_key):
                 answers_time_list.append(answers_time)                      # Add answers duration time to list answersTimeList.
                 input_received.append(pressed_key)                          # Add the input character to the list inputReceived.
 
-                if pressed_key == stop_key or pressed_key == '\x03':
+                if pressed_key == stop_key or pressed_key == '\x03':        # Check if user pressed the test keys to finish (Space or CTRL+C).
                     timeOut(0, 0)                                           # Call timeOut function.
                 elif pressed_key == random_character:                       # Checks if user typed key it's equal to random key generated.
                     color = Fore.GREEN                                      # Green color, it means correct answer.
                     number_of_hits += 1                                     # Add 1 to the number of correct answers.
                     number_of_types += 1                                    # Add 1 to the total number of answers.
-                    answers_time_OK = answers_time_OK + answers_time        # Total times of ok answers
+                    answers_time_OK = answers_time_OK + answers_time        # Total times of ok answers.
                 else:
                     color = Fore.RED                                        # Red color, it means incorrect answer.
                     wrong_answers += 1                                      # Add 1 to the number of wrong answers.
                     number_of_types += 1                                    # Add 1 to the total number of answers.
-                    answers_time_NOK = answers_time_NOK + answers_time      # Total times of not ok answers
+                    answers_time_NOK = answers_time_NOK + answers_time      # Total times of not ok answers.
 
-                print('You typed ' + color + Style.BRIGHT + str(pressed_key) + Style.RESET_ALL)    # Print user typed key.
+                print('You typed ' + color + Style.BRIGHT + str(pressed_key) + Style.RESET_ALL)             # Print user typed key.
 
-                entry.append(Input(str(random_character), pressed_key, answers_time))
+                entry.append(Input(str(random_character), pressed_key, answers_time))                       # Add the inputs to previously created list (Requested character/word/phrase, Pressed character/word/phrase, Ellapsed time).
 
-                if (args.get('use_time_mode') == False) and (number_of_types == args.get('max_value')):    # Check if user choose a test with maximum inputs number duration and if those number it was already hit.
-                    timeOut(0, 0)  # Call timeOut function.
+                if (args.get('use_time_mode') == False) and (number_of_types == args.get('max_value')):     # Check if user choose a test with maximum inputs number duration and if those number it was already hit.
+                    timeOut(0, 0)                                                                           # Call timeOut function.
 
             except KeyboardInterrupt:                                                   # To allow CTRL+C to stop test.
                 timeOut(0, 0)                                                           # Call timeOut function.
@@ -185,7 +184,7 @@ def timeOut(signum, stack):
         # This part of code is necessary because of the formatting error when we combine signals (to end text after a user defined amount of time) and Readchar function.
         for key, value in dic_result.items():                                                                   # Cycle that runs through the contents of the previously created dictionary.
             if key == 'accuracy':                                                                               # Check if the key in analysis it's 'accuracy' key.
-                print('\r' + "{'" + key + "'" + ':', str(value) + ',')
+                print('\r' + "{'" + key + "'" + ':', str(value) + ',')                                          # Prints the desired text.
             elif key == 'inputs':                                                                               # Check if the key in analysis it's 'inputs' key.
                 print('\r')                                                                                     # Prints a carriage return.
                 print("\x1B[F\x1B[2K", end="")                                                                  # To hide the input text.
