@@ -43,6 +43,10 @@ def typingKey(stop_key):
         print(Fore.RED + Style.BRIGHT + '\n Missing argument: test_difficulty_value, -tdv' + Style.RESET_ALL)   # Error message.
         exit()                                                                                      # Stops program.
 
+    if not args.get('max_value') > 0:
+        print(Fore.RED + Style.BRIGHT + 'Invalid input parameters' + Style.RESET_ALL)               # Error message.
+        exit()
+
     if (args.get('test_difficulty_value') > 0) and (args.get('test_difficulty_value') < 5):         # Check if users test difficulty value input it's valid.
 
         # Variables initialization.
